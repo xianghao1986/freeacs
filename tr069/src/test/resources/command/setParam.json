@@ -1,0 +1,17 @@
+{
+  "deviceId": "SKY1808231239999",
+  "command": "SetParameterValues",
+  "sessionId": "123456",
+  "dataList": [
+    {
+      "name": "Device.ManagementServer.ConnectionRequestPassword",
+      "value": "cpe",
+      "type": "string"
+    },
+    {
+      "name": "Device.ManagementServer.ConnectionRequestUsername",
+      "value": "cpe",
+      "type": "string"
+    }
+  ]
+}

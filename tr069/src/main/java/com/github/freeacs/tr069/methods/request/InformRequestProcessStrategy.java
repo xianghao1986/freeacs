@@ -1,5 +1,7 @@
 package com.github.freeacs.tr069.methods.request;
 
+import com.alibaba.fastjson.JSONObject;
+import com.github.freeacs.config.RequestReportHandler;
 import com.github.freeacs.tr069.CPEParameters;
 import com.github.freeacs.tr069.CommandKey;
 import com.github.freeacs.tr069.InformParameters;
@@ -27,7 +29,6 @@ import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import com.github.freeacs.tr069.xml.Parser;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -56,6 +57,7 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
             reqRes.getRequestData().setMethod(ProvisioningMethod.Inform.name());
             Parser parser = new Parser(reqRes.getRequestData().getXml());
             SessionData sessionData = reqRes.getSessionData();
+            sessionData.setParser(parser);
             Header header = parser.getHeader();
             reqRes.setTR069TransactionID(header.getId());
             DeviceIdStruct deviceIdStruct = parser.getDeviceIdStruct();
@@ -111,23 +113,25 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
         Set<Integer> eventCodeIntSet = new TreeSet<>();
         Set<String> eventCodeStrSet = new HashSet<>();
 
+        StringBuilder eventCodes = new StringBuilder();
         sessionData.setCommandKey(new CommandKey());
         for (int i = 0; eventList != null && i < eventList.getEventList().size(); i++) {
             EventStruct es = eventList.getEventList().get(i);
+            eventCodes.append(es.getEventCode());
             String[] tmpArr = es.getEventCode().split(" ");
             try {
                 eventCodeIntSet.add(Integer.parseInt(tmpArr[0]));
             } catch (NumberFormatException nfe) {
                 eventCodeStrSet.add(tmpArr[0]);
             }
-            sessionData.setFactoryReset(es.getEventCode().startsWith("0"));
-            sessionData.setBooted(es.getEventCode().startsWith("1"));
-            sessionData.setPeriodic(es.getEventCode().startsWith("2"));
-            sessionData.setValueChange(es.getEventCode().startsWith("4"));
-            sessionData.setKicked(es.getEventCode().startsWith("6"));
-            sessionData.setTransferComplete(es.getEventCode().startsWith("7"));
-            sessionData.setAutonomousTransferComplete(es.getEventCode().startsWith("10"));
-            sessionData.setDiagnosticsComplete(es.getEventCode().startsWith("8"));
+            if(!sessionData.isFactoryReset()) sessionData.setFactoryReset(es.getEventCode().startsWith("0"));
+            if(!sessionData.isBooted()) sessionData.setBooted(es.getEventCode().startsWith("1"));
+            if(!sessionData.isPeriodic()) sessionData.setPeriodic(es.getEventCode().startsWith("2"));
+            if(!sessionData.isValueChange()) sessionData.setValueChange(es.getEventCode().startsWith("4"));
+            if(!sessionData.isKicked()) sessionData.setKicked(es.getEventCode().startsWith("6"));
+            if(!sessionData.isTransferComplete()) sessionData.setTransferComplete(es.getEventCode().startsWith("7"));
+            if(!sessionData.isAutonomousTransferComplete()) sessionData.setAutonomousTransferComplete(es.getEventCode().startsWith("10"));
+            if(!sessionData.isDiagnosticsComplete()) sessionData.setDiagnosticsComplete(es.getEventCode().startsWith("8"));
             // This is a quick-and-easy impl. since, there can potentially be more than
             // one CommandKey. However, I don't think this will be the case in practice. (Morten May 2012)
             // TODO: This is surely not correct - Morten Jul 2012
@@ -135,12 +139,12 @@ public class InformRequestProcessStrategy implements RequestProcessStrategy {
                 sessionData.getCommandKey().setCpeKey(es.getCommandKey());
             }
         }
-        String eventCodes = StringUtils.join(eventCodeIntSet.iterator(), ",");
-        if (!eventCodeStrSet.isEmpty()) {
-            eventCodes += "," + StringUtils.join(eventCodeStrSet.iterator(), ",");
-        }
-        if (!eventCodes.isEmpty()) {
-            sessionData.setEventCodes(eventCodes);
+//        String eventCodes = StringUtils.join(eventCodeIntSet.iterator(), ",");
+//        if (!eventCodeStrSet.isEmpty()) {
+//            eventCodes += "," + StringUtils.join(eventCodeStrSet.iterator(), ",");
+//        }
+        if (eventCodes.length() > 0) {
+            sessionData.setEventCodes(eventCodes.toString());
         }
     }
 

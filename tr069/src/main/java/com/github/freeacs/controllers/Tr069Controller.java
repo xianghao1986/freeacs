@@ -3,6 +3,7 @@ package com.github.freeacs.controllers;
 import com.github.freeacs.dbi.DBI;
 import com.github.freeacs.dbi.Unit;
 import com.github.freeacs.security.AcsUnit;
+import com.github.freeacs.tr069.CommandService;
 import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
 import com.github.freeacs.tr069.SessionLogging;
@@ -15,8 +16,10 @@ import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.http.HTTPResponseData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.methods.ProvisioningStrategy;
+import com.github.freeacs.tr069.repository.DeviceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -45,10 +48,14 @@ public class Tr069Controller {
 
     private final DBI dbi;
     private final Properties properties;
+    private final CommandService commandService;
+    private final DeviceRepository deviceRepository;
 
-    public Tr069Controller(DBI dbi, Properties properties) {
+    public Tr069Controller(DBI dbi, Properties properties, CommandService commandService, DeviceRepository deviceRepository) {
         this.properties = properties;
         this.dbi = dbi;
+        this.commandService = commandService;
+        this.deviceRepository = deviceRepository;
     }
 
     /**
@@ -92,7 +99,7 @@ public class Tr069Controller {
                 sessionData.setUnit(dbi.getACSUnit().getUnitById(username));
             }
 
-            ProvisioningStrategy.getStrategy(properties, dbi).process(reqRes);
+            ProvisioningStrategy.getStrategy(properties, dbi, commandService, deviceRepository).process(reqRes);
 
             return ResponseEntity
                     .status("Empty".equals(reqRes.getResponseData().getMethod())
@@ -113,6 +120,7 @@ public class Tr069Controller {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("");
         } finally {
             if (reqRes != null && endOfSession(reqRes)) {
+                System.err.println("关闭session");
                 log.debug("End of session is reached, " +
                         "will write queued unit parameters " +
                         "if unit (" + reqRes.getSessionData().getUnit() + ") is not null");

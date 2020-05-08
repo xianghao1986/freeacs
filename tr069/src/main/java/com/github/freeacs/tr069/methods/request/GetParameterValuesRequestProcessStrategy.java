@@ -1,12 +1,16 @@
 package com.github.freeacs.tr069.methods.request;
 
-import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.CPEParameters;
+import com.github.freeacs.tr069.Properties;
 import com.github.freeacs.tr069.SessionData;
+import com.github.freeacs.tr069.entity.Command;
+import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.methods.ProvisioningMethod;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
 import com.github.freeacs.tr069.xml.Parser;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Date;
 
 @Slf4j
 public class GetParameterValuesRequestProcessStrategy implements RequestProcessStrategy {
@@ -31,6 +35,14 @@ public class GetParameterValuesRequestProcessStrategy implements RequestProcessS
             log.warn(msg);
         }
         populateCPEParameters(sessionData);
+        Command command = reqRes.getSessionData().getCommand();
+        if(command != null){
+            log.info("有查询参数命令正在处理中，需要处理结果");
+            command.setCmdStatus(Command.STATUS_FINISHED);
+            command.setEndTime(new Date());
+            command.setResult(Command.RESULT_SUCCESS);
+            command.setReportParams(parser.getParameterList().getParameterValueList());
+        };
     }
 
     @SuppressWarnings("Duplicates")

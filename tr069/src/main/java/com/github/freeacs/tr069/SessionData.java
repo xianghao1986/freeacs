@@ -12,9 +12,12 @@ import com.github.freeacs.dbi.Unittype;
 import com.github.freeacs.dbi.Unittype.ProvisioningProtocol;
 import com.github.freeacs.dbi.util.ProvisioningMessage;
 import com.github.freeacs.dbi.util.SystemParameters;
+import com.github.freeacs.tr069.entity.Command;
+import com.github.freeacs.tr069.entity.Device;
 import com.github.freeacs.tr069.http.HTTPRequestResponseData;
 import com.github.freeacs.tr069.xml.ParameterList;
 import com.github.freeacs.tr069.xml.ParameterValueStruct;
+import com.github.freeacs.tr069.xml.Parser;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -113,6 +116,12 @@ public class SessionData implements SessionDataI {
   private Download download;
 
   private String cwmpVersionNumber;
+
+  private Command command;
+
+  private Parser parser;
+
+  private Device device;
 
   public SessionData(String id) {
     this.id = id;
@@ -224,6 +233,14 @@ public class SessionData implements SessionDataI {
       version = cpeParameters.getValue(cpeParameters.SOFTWARE_VERSION);
     }
     return version;
+  }
+
+  public String getReqMethod() {
+    if (reqResList != null && reqResList.size() > 0) {
+      HTTPRequestResponseData reqResData = reqResList.get(reqResList.size() - 1);
+      return reqResData.getRequestData().getMethod();
+    }
+    return null;
   }
 
   @Data

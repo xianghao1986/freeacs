@@ -39,7 +39,8 @@ public class CPEParameters {
   private Map<String, ParameterValueStruct> cpeParams = new HashMap<>();
 
   public CPEParameters(String keyRoot) {
-    CONFIG_FILES = keyRoot + "DeviceInfo.VendorConfigFile.";
+//    CONFIG_FILES = keyRoot + "DeviceInfo.VendorConfigFile.";
+    CONFIG_FILES = keyRoot + "DeviceInfo.HardwareVersion";
     SOFTWARE_VERSION = keyRoot + "DeviceInfo.SoftwareVersion";
     PERIODIC_INFORM_INTERVAL = keyRoot + "ManagementServer.PeriodicInformInterval";
     CONNECTION_URL = keyRoot + "ManagementServer.ConnectionRequestURL";

@@ -23,6 +23,8 @@
         <appender-ref ref="FILE" />
     </appender>
     <logger name="com.github.freeacs" level="INFO" />
+    <logger name="com.github.freeacs.stun" level="DEBUG" />
+    <logger name="de.javawi.jstun" level="DEBUG"/>
     <root level="INFO">
         <appender-ref ref="ASYNC_FILE"/>
         <appender-ref ref="ASYNC_STDOUT" />

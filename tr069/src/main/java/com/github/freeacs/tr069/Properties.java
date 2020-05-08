@@ -21,6 +21,12 @@ public class Properties {
 
   private Environment environment;
 
+  private String secondaryIp;
+  private String primaryIp;
+  private Integer secondaryPort;
+  private Integer primaryPort;
+  private boolean stunEnable;
+
   public Properties(Environment environment) {
     this.environment = environment;
     setAuthMethod(environment.getProperty("auth.method"));
@@ -31,6 +37,18 @@ public class Properties {
     setDiscoveryBlock(environment.getProperty("discovery.block", String.class, null));
     setConcurrentDownloadLimit(environment.getProperty("concurrent.download.limit", Integer.class, 50));
     setAppendHwVersion(environment.getProperty("unit.type.append-hw-version", Boolean.class, false));
+    setPrimaryPort(environment.getProperty("primary.port",Integer.class,3478));
+    setSecondaryPort(environment.getProperty("secondary.port",Integer.class,3478));
+    setPrimaryIp(environment.getProperty("primary.ip"));
+    setSecondaryIp(environment.getProperty("secondary.ip"));
+    setStunEnable(environment.getProperty("stun.enable",Boolean.class, false));
+  }
+
+  public String getValueByName(String name){
+    return environment.getProperty(name);
+  }
+  public String getValueByName(String name, String defaultValue){
+    return environment.getProperty(name, defaultValue);
   }
 
   private void setDiscoveryBlock(String discoveryBlock) {

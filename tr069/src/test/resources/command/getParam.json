@@ -1,0 +1,16 @@
+{
+  "deviceId": "SKY1808231239999",
+  "command": "GetParameterValues",
+  "sessionId": "123456",
+  "dataList": [
+    {
+      "name": "Device.DeviceInfo.FirstUseDate1"
+    },
+    {
+      "name": "Device.DeviceInfo.ProvisioningCode"
+    },
+    {
+      "name": "Device.DeviceSummary"
+    }
+  ]
+}

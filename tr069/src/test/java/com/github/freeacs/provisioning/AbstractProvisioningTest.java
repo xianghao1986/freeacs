@@ -20,9 +20,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SuppressWarnings("WeakerAccess")
 public abstract class AbstractProvisioningTest {
-    public static final String UNIT_ID = "test123";
+    public static final String UNIT_ID = "root";
     public static final String UNIT_TYPE_NAME = "Test";
-    public static final String UNIT_PASSWORD = "password";
+    public static final String UNIT_PASSWORD = "root";
     public static final String PROFILE_NAME = "Default";
     public static final String UNIT_ID_AUTO = "000000-FakeProductClass-FakeSerialNumber";
 
@@ -67,7 +67,9 @@ public abstract class AbstractProvisioningTest {
         }
         unittypes.addOrChangeUnittype(new Unittype(UNIT_TYPE_NAME, "","", TR069), dbi.getAcs());
         unittype = unittypes.getByName(UNIT_TYPE_NAME);
-        unittype.getUnittypeParameters().addOrChangeUnittypeParameter(new UnittypeParameter(unittype, "InternetGatewayDevice.ManagementServer.PeriodicInformInterval", new UnittypeParameterFlag("RW")), dbi.getAcs());
+        unittype.getUnittypeParameters().addOrChangeUnittypeParameter
+                (new UnittypeParameter(unittype, "InternetGatewayDevice.ManagementServer.PeriodicInformInterval",
+                        new UnittypeParameterFlag("RW")), dbi.getAcs());
         return unittype;
     }
 

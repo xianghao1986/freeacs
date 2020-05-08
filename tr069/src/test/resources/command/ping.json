@@ -1,0 +1,52 @@
+{
+  "deviceId": "SKY1808231239999",
+  "command": "Ping",
+  "sessionId": "123456",
+  "dataList": [
+    {
+      "name": "Device.LAN.IPPingDiagnostics.DiagnosticsState",
+      "value": "Requested",
+      "type": "string"
+    },
+    {
+      "name": "Device.LAN.IPPingDiagnostics.DSCP",
+      "value": "0",
+      "type": "unsignedInt"
+    },
+    {
+      "name": "Device.LAN.IPPingDiagnostics.NumberOfRepetitions",
+      "value": "1024",
+      "type": "unsignedInt"
+    },
+    {
+      "name": "Device.LAN.IPPingDiagnostics.Timeout",
+      "value": "300",
+      "type": "unsignedInt"
+    },
+    {
+      "name": "Device.LAN.IPPingDiagnostics.Host",
+      "value": "192.168.1.100",
+      "type": "string"
+    }
+  ],
+  "retDataList": [
+    {
+      "name": "Device.LAN.IPPingDiagnostics.DiagnosticsState"
+    },
+    {
+      "name": "Device.LAN.IPPingDiagnostics.SuccessCount"
+    },
+    {
+      "name": "Device.LAN.IPPingDiagnostics.FailureCount"
+    },
+    {
+      "name": "Device.LAN.IPPingDiagnostics.AverageResponseTime"
+    },
+    {
+      "name": "Device.LAN.IPPingDiagnostics.MinimumResponseTime"
+    },
+    {
+      "name": "Device.LAN.IPPingDiagnostics.MaximumResponseTime"
+    }
+  ]
+}

@@ -38,29 +38,45 @@ public class GetParameterValuesResponseCreateStrategy implements ResponseCreateS
         SessionData sessionData = reqRes.getSessionData();
         ProvisioningMode mode = sessionData.getUnit().getProvisioningMode();
         List<ParameterValueStruct> parameterValueList = new ArrayList<>();
-        if (mode == ProvisioningMode.READALL) {
-            log.debug("Asks for all params (" + sessionData.getKeyRoot() + "), since in " + ProvisioningMode.READALL + " mode");
-            ParameterValueStruct pvs = new ParameterValueStruct(sessionData.getKeyRoot(), "");
-            parameterValueList.add(pvs);
-        } else { // mode == ProvisioningMode.PERIODIC
-            // List<RequestResponseData> reqResList = sessionData.getReqResList();
-            String previousMethod = sessionData.getPreviousResponseMethod();
-            if (properties.isUnitDiscovery(sessionData)
-                    || ProvisioningMethod.GetParameterValues.name().equals(previousMethod)) {
-                log.debug("Asks for all params (" + sessionData.getKeyRoot() + "), either because unitdiscovery-quirk or prev. GPV failed");
-                ParameterValueStruct pvs = new ParameterValueStruct(sessionData.getKeyRoot(), "");
-                parameterValueList.add(pvs);
-            } else {
-                Map<String, ParameterValueStruct> paramValueMap = sessionData.getFromDB();
-                addCPEParameters(sessionData, properties);
-                for (Map.Entry<String, ParameterValueStruct> entry : paramValueMap.entrySet()) {
-                    parameterValueList.add(entry.getValue());
-                }
-                log.debug("Asks for " + parameterValueList.size() + " parameters in GPV-req");
-                parameterValueList.sort(new ParameterValueStructComparator());
-            }
+//        if (mode == ProvisioningMode.READALL) {
+//            log.debug("Asks for all params (" + sessionData.getKeyRoot() + "), since in " + ProvisioningMode.READALL + " mode");
+//            ParameterValueStruct pvs = new ParameterValueStruct(sessionData.getKeyRoot(), "");
+//            parameterValueList.add(pvs);
+//        } else { // mode == ProvisioningMode.PERIODIC
+//            // List<RequestResponseData> reqResList = sessionData.getReqResList();
+//            String previousMethod = sessionData.getPreviousResponseMethod();
+//            if (properties.isUnitDiscovery(sessionData)
+//                    || ProvisioningMethod.GetParameterValues.name().equals(previousMethod)) {
+//                log.debug("Asks for all params (" + sessionData.getKeyRoot() + "), either because unitdiscovery-quirk or prev. GPV failed");
+//                ParameterValueStruct pvs = new ParameterValueStruct(sessionData.getKeyRoot(), "");
+//                parameterValueList.add(pvs);
+//            } else {
+//                Map<String, ParameterValueStruct> paramValueMap = sessionData.getFromDB();
+//                addCPEParameters(sessionData, properties);
+//                for (Map.Entry<String, ParameterValueStruct> entry : paramValueMap.entrySet()) {
+//                    parameterValueList.add(entry.getValue());
+//                }
+//                log.debug("Asks for " + parameterValueList.size() + " parameters in GPV-req");
+//                parameterValueList.sort(new ParameterValueStructComparator());
+//            }
+//        }
+        if (sessionData.getRequestedCPE() == null ){
+            parameterValueList.add(new ParameterValueStruct("Device.ManagementServer.PeriodicInformInterval","", ""));
+            parameterValueList.add(new ParameterValueStruct("Device.ManagementServer.ConnectionRequestURL","", ""));
+            parameterValueList.add(new ParameterValueStruct("Device.ManagementServer.ConnectionRequestPassword","", ""));
+            parameterValueList.add(new ParameterValueStruct("Device.ManagementServer.ConnectionRequestUsername","", ""));
+            parameterValueList.add(new ParameterValueStruct("Device.ManagementServer.STUNEnable","", ""));
+            parameterValueList.add(new ParameterValueStruct("Device.ManagementServer.NATDetected","", ""));
+            parameterValueList.add(new ParameterValueStruct("Device.ManagementServer.UDPConnectionRequestAddress","", ""));
+            sessionData.setRequestedCPE(parameterValueList);
         }
-        sessionData.setRequestedCPE(parameterValueList);
+
+
+        // 测试查询所有数据模型的值
+//        parameterValueList.clear();
+//        parameterValueList.add(new ParameterValueStruct("Device.","", ""));
+
+
         Body body = new Body() {
             public String toXmlImpl() {
                 StringBuilder sb = new StringBuilder(3);
@@ -68,10 +84,10 @@ public class GetParameterValuesResponseCreateStrategy implements ResponseCreateS
                 sb.append("\t\t\t<ParameterNames ")
                         .append("soapenc")
                         .append(":arrayType=\"xsd:string[")
-                        .append(parameterValueList.size())
+                        .append(sessionData.getRequestedCPE().size())
                         .append("]\">\n");
 
-                for (ParameterValueStruct parameter : parameterValueList) {
+                for (ParameterValueStruct parameter : sessionData.getRequestedCPE()) {
                     sb.append("\t\t\t\t<string>").append(parameter.getName()).append("</string>\n");
                 }
                 sb.append("\t\t\t</ParameterNames>\n");

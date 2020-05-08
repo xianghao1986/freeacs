@@ -31,10 +31,10 @@ public class Fault {
 
   public String toString() {
     StringBuilder str = new StringBuilder();
-    if (this.soapFaultCode != null) {
-      str.append("SOAP FaultCode       :  ").append(this.soapFaultCode).append("\n");
-      str.append("SOAP FaultString     :  ").append(this.soapFaultString).append("\n");
-    }
+//    if (this.soapFaultCode != null) {
+//      str.append("SOAP FaultCode       :  ").append(this.soapFaultCode).append("\n");
+//      str.append("SOAP FaultString     :  ").append(this.soapFaultString).append("\n");
+//    }
     if (this.faultCode != null) {
       str.append("FaultCode            :  ").append(this.faultCode).append("\n");
       str.append("FaultString          :  ").append(this.faultString).append("\n");

@@ -54,6 +54,7 @@ public class StunServer {
   private static Counter counter = new Counter();
   private List<DatagramSocket> sockets;
   private static TimestampMap activeStunClients = new TimestampMap();
+  public static DatagramSocket newestReceiveSocket ;
 
   /**
    * Inner class to handle incoming packets and react accordingly. I decided not to start a thread
@@ -129,6 +130,8 @@ public class StunServer {
         ResponseAddress ra,
         DatagramPacket receive)
         throws UtilityException, MessageAttributeException, IOException {
+      newestReceiveSocket = receiverSocket;
+
       counter.incRequestBindingConnection();
       // LOGGER.debug("Change port and ip received in Change Request attribute");
       // Source address attribute

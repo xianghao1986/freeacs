@@ -57,9 +57,10 @@
         <appender-ref ref="ASYNC_STDOUT"/>
     </logger>
     <logger name="org.eclipse.jetty" level="WARN" />
-    <logger name="com.github.freeacs" level="WARN" />
+    <logger name="com.github.freeacs" level="INFO" />
     <root level="INFO">
         <appender-ref ref="ASYNC_FILE"/>
         <appender-ref ref="ASYNC_STDOUT" />
     </root>
+    <logger name="de.javawi.jstun" level="DEBUG"/>
 </configuration>

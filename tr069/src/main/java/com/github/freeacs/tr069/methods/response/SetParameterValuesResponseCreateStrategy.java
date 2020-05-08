@@ -26,9 +26,22 @@ public class SetParameterValuesResponseCreateStrategy implements ResponseCreateS
         Body body;
         ParameterList paramList = reqRes.getSessionData().getToCPE();
         ParameterKey pk = new ParameterKey();
-        if (!properties.isParameterkeyQuirk(reqRes.getSessionData())) {
+//        if (!properties.isParameterkeyQuirk(reqRes.getSessionData())) {
             pk.setServerKey(reqRes);
+//        }
+//        List<ParameterValueStruct> parameterValueList = new ArrayList<>();
+        paramList.addParameterValueStruct(new ParameterValueStruct("Device.ManagementServer.PeriodicInformEnable","1", "xsd:boolean"));
+        paramList.addParameterValueStruct(new ParameterValueStruct("Device.ManagementServer.PeriodicInformInterval", "300", "xsd:unsignedInt"));
+        if (properties.isStunEnable() && !reqRes.getSessionData().getDevice().isStunEnable()) {
+            paramList.addParameterValueStruct(new ParameterValueStruct("Device.ManagementServer.STUNEnable", "1", "xsd:boolean"));
+            paramList.addParameterValueStruct(new ParameterValueStruct("Device.ManagementServer.STUNMinimumKeepAlivePeriod", "15", "xsd:int"));
+            paramList.addParameterValueStruct(new ParameterValueStruct("Device.ManagementServer.STUNMaximumKeepAlivePeriod","60", "xsd:int"));
         }
+//        paramList.addParameterValueStruct(new ParameterValueStruct("Device.ManagementServer.STUNServerPort","3478", "xsd:unsignedInt"));
+//        paramList.addParameterValueStruct(new ParameterValueStruct("Device.ManagementServer.STUNServerAddress","172.28.19.3", "xsd:string"));
+//        paramList.addParameterValueStruct(new ParameterValueStruct("Device.ManagementServer.STUNUsername","stunuser", "xsd:string"));
+//        paramList.addParameterValueStruct(new ParameterValueStruct("Device.ManagementServer.STUNPassword","stunpass", "xsd:string"));
+
         body = new Body() {
             private List<ParameterValueStruct> parameterValueList = paramList.getParameterValueList();
             private String parameterKey = pk.getServerKey();
